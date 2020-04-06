@@ -1,0 +1,27 @@
+Backlog : 
+https://docs.google.com/spreadsheets/d/1gWw__c3IRXgxqIBvHBIOhp96JART-FM9tdPCr4M2jx8/edit?usp=sharing
+
+
+Git Commands :
+
+git status : This tells us that our current branch is up-to-date , origin means the remote repo and master is the current branch. Working directory clean: means we haven’t added or modified any files. Untracked file:
+
+git add : adding it
+
+git clone <link> : get the repo on your desk
+
+git commit -m “ message” : adding a descriptive message to this commit *git pull origin
+
+git pull : to update files on my desktop.
+
+git branch : create a new branch
+
+Git checkout : to switch to another branch
+
+git push origin : to push the changes of this branch
+
+git checkout : switch between branches
+
+git merge : merge the master and the current branch
+
+git log : to see all past commits . Log --pretty=oneline : outputs the commands in one line

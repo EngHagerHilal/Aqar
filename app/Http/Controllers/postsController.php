@@ -538,55 +538,19 @@ class postsController extends Controller
 
         $posts=posts::where('id',$request->post_id)->first();
         if($posts!=null){
-            if(Auth::id()==$posts->user_id){
-                $notificationUpdate=notification::where([
-                    ['post_id','=',$posts->id],
-                    ['status','=','notRead'],
-                    ['not_to_id','=',Auth::id()]
-                ])->get();
-                if($notificationUpdate!=null){
-                    foreach ($notificationUpdate as $notItem){
-                        $notItem->update(['status'=>'Read']);
-                    }
-                }
-            }
             $images = gallary::where('post_id', $posts->id)->get();
             if ($images != null) {
                 $posts->allImages = $images;
                 $posts->mainImage = gallary::where('post_id', $posts->id)->first()->img_url;
             }
             else{
-                $posts->mainImage = 'img/no-image.png';
-                $posts->allImages = 'img/no-image.png';
-            }
-            $comments = comments::where('comments.post_id',$posts->id )->orderBy('id','ASC')
-                ->get();
-            if($comments!=null){
-                foreach ($comments as $comment) {
-                    $comment->user=User::find($comment->user_id)->name;
-                    $replies = reply::where('comment_id',$comment->id )->orderBy('id','ASC')->get();
-                    if($replies !=null){
-                        foreach ($replies as $reply) {
-                            $reply->user=User::find($reply->user_id)->name;
-                        }
-                        $comment->replies=$replies;
-                    }
-                    else{
-                        $comment->replies='no';
-                    }
-
-
-                }
-                $posts->allComments=$comments;
-            }
-            else{
-                $posts->allComments='';
+                $posts->mainImage = '/img/no-image.png';
+                $posts->allImages = '/img/no-image.png';
             }
             return \Response::json(['post'=>$posts]);
-
         }
         else{
-            return 'you dont have permission to access this page';
+            return 'post not found';
         }
 
     }
@@ -790,9 +754,12 @@ class postsController extends Controller
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
-        $user = User::where('api_token', $request->api_token)->get()->first();
+        $user = User::where('api_token', $request->api_token)->first();
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
+        }
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
         }
         $posts=posts::where([['user_id',$user->id],['id',$request->post_id]])->first();
         if($posts!=null){
@@ -804,7 +771,7 @@ class postsController extends Controller
     }
     public function updatePostAPI( Request $request){
         $validateRules = [
-            'api_token' => 'required',
+            'api_token'     => 'required',
             'post_name'     =>  'required',
             'post_desc'     =>  'required',
             'post_address'  =>  'required',
@@ -812,16 +779,19 @@ class postsController extends Controller
             'mobile'        =>  'required',
             'price'         =>  'required',
             'email'         =>  'required',
+            'status'        =>  'required',
         ];
         $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
-        $user = User::where('api_token', $request->api_token)->get()->first();
+        $user = User::where('api_token', $request->api_token)->first();
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
         }
-
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
+        }
         $user_id = $user->id;
         $update = \DB::table('posts') ->where([ ['id', $request->id],['user_id',$user_id] ]) ->limit(1) ->update(
             [   'user_id'       => $user_id,
@@ -831,6 +801,7 @@ class postsController extends Controller
                 'price'         => $request->price,
                 'email'         => $request->email,
                 'phone'         => $request->mobile,
+                'status'        => $request->status,
             ]
         );
         return \Response::json(['success'=>'updated success','post_id'=>$request->post_id]);
@@ -839,6 +810,7 @@ class postsController extends Controller
     public function deletePostAPI(Request $request){
         $validateRules = [
             'api_token' => 'required',
+            'post_id'   => 'required',
         ];
         $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
@@ -847,6 +819,9 @@ class postsController extends Controller
         $user = User::where('api_token', $request->api_token)->get()->first();
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
+        }
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
         }
         $posts=posts::where([['user_id',$user->id],['id',$request->post_id]])->first();
         if($posts!=null){
@@ -867,40 +842,48 @@ class postsController extends Controller
 
     }
 
-    public function myNewNotificationAPI(Request $request){
-        $validateRules = [
-            'api_token' => 'required',
-        ];
-        $error = Validator::make($request->all(), $validateRules);
-        if ($error->fails()) {
-            return \Response::json(['errors' => $error->errors()->all()]);
+    public function searchPostsAPI(Request $request)
+    {
+        $serachOption=$request->filterType;
+        $seachText=$request->searchFor;
+        if($serachOption != null){
+            $posts=DB::table('posts')
+                ->where([['post_name','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['desc','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['address','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['price','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['email','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['type','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orWhere([['phone','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->orderBy('id','DESC')->get();
+            $type=$serachOption;
         }
-        $user = User::where('api_token', $request->api_token)->get()->first();
-        if ($user == null) {
-            return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
+        else{
+            $posts=DB::table('posts')
+                ->where([['post_name','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['desc','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['address','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['price','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['email','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['type','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['phone','like','%'.$seachText.'%'],['status','=','active']])
+                ->orderBy('id','DESC')->get();
         }
-        $notification=notification::AllnotiUnreaded($user->id);
-        return \Response::json(['New notification' => $notification]);
-
+        if($posts !=null){
+            foreach ($posts as $post) {
+                $post->username=User::find($post->user_id)->name;
+                $images = gallary::where('post_id', $post->id)->first();
+                if ($images != null) {
+                    $post->mainImage = $images->img_url;
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                }
+            }
+            return \Response::json(['success' => 'data available : '.count($posts),'data'=>$posts]);
+        }
+        return \Response::json(['alert' => 'now data available with search']);
 
     }
-    public function myAllNotificationAPI(Request $request){
-        $validateRules = [
-            'api_token' => 'required',
-        ];
-        $error = Validator::make($request->all(), $validateRules);
-        if ($error->fails()) {
-            return \Response::json(['errors' => $error->errors()->all()]);
-        }
-        $user = User::where('api_token', $request->api_token)->get()->first();
-        if ($user == null) {
-            return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
-        }
-        $notification=notification::AllnotiUnreaded($user->id);
-        return \Response::json(['all notification' => $notification]);
-
-
-    }
-
 
 }

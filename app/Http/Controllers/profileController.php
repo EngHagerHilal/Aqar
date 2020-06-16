@@ -87,6 +87,7 @@ class profileController extends Controller
 
         return redirect(route('postDetails',['post_id'=>$request->id]));
     }
+
     public function EditMyProfileAPI(Request $request){
         $validateRules = [
             'api_token' => 'required',
@@ -99,11 +100,14 @@ class profileController extends Controller
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
         }
+
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
+        }
         else{
             return $user;
         }
     }
-
     public function UpdateMyProfileAPI(Request $request){
         $validateRules=[
             'api_token'     => 'required',
@@ -119,7 +123,12 @@ class profileController extends Controller
         }
         $credentials  = array('email' => $request->email, 'password' => $request->currentPass);
         $user = User::where('api_token', $request->api_token)->first();
-
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
+        }
+        if($user->email_verified_at==''){
+            return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
+        }
         if (Auth::attempt($credentials, $request->has('remember'))){
             $dubleUserName=User::where([['name','=',$request->username],['id','!=',$user->id]])->first();
             if($dubleUserName ){

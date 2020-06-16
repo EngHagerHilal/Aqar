@@ -86,7 +86,6 @@ class LoginController extends Controller
         $validateRules=[
             'email'         =>  'required',
         ];
-        $newFilesArray=[];
         $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);

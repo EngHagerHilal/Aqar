@@ -28,9 +28,27 @@ class RegisterController extends Controller
 
 
 //resend email vertification
+    public function resendEmailActivation(Request $request)
+    {
+        $validateRules=[
+            'api_token'   =>  'required',
+        ];
+        $error= \Illuminate\Support\Facades\Validator::make($request->all(),$validateRules);
+        if($error->fails()){
+            return \Response::json(['errors'=>$error->errors()->all()]);
+        }
+        $user=User::where('api_token',$request->api_token)->first();
+        if($user==null){
+            return \Response::json(['errors'=>'error login','message'=>'please login and active your account to access']);
+        }
+        if ($user->hasVerifiedEmail()) {
+            return \Response::json(['failed'=>'allredy activated','message'=>'your account is activated before!!!']);
+        }
+        $user->sendEmailVerificationNotification();
+        return \Response::json(['success'=>'email resent','message'=>'email resent check your emails in few seconds']);
+    }
     public function resend(Request $request)
     {
-
         $validateRules=[
             'api_token'   =>  'required',
         ];
@@ -44,7 +62,6 @@ class RegisterController extends Controller
         }
         if ($user->hasVerifiedEmail()) {
             return \Response::json(['failed'=>'arredy activated','message'=>'your account is activated before!!!']);
-
         }
         $user->sendEmailVerificationNotification();
         return \Response::json(['success'=>'email resent','message'=>'email resent check your emails in few seconds']);

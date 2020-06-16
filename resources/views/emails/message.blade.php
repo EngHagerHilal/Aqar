@@ -46,9 +46,9 @@
         </style>
     </head>
     <body>
-        <nav style="text-align: center">
-            <h1 style="text-align: center;padding: 10px;"><a href="{{url('/')}}">{{env('APP_NAME')}}</a></h1>
-        </nav>
+        <div style="text-align: center; background-color: #007BFF">
+            <h2 style="text-align: center;padding: 10px;"><a style="color: #fff" href="{{url('/')}}">{{env('APP_NAME')}} <img src="{{asset('img/logo/logo.png')}}" width="50" height="50"> </a></h2>
+        </div>
     <br>
     <br>
     <br>
@@ -56,7 +56,7 @@
     <br>
     <br>
     <br>
-    <main style="text-align: center">
+    <div style="text-align: center">
         <h2>hello Admin</h2>
         <p> You have new message from : <strong>{{$user}}</strong></p>
         message : <textarea cols="5" rows="10" style="display:block;
@@ -68,7 +68,7 @@
             <br>email :<strong>{{$email}}</strong>
             <br>phone :<strong>{{$phone}}</strong>
         </p>
-    </main>
+    </div>
     </body>
 </html>
 

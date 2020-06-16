@@ -12,7 +12,7 @@ use App\reply;
 use App\User;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use DB;
 use Illuminate\Http\Request;
 
@@ -470,7 +470,7 @@ class postsController extends Controller
         $validateRules=[
             'api_token'   =>  'required',
         ];
-        $error= \Illuminate\Support\Facades\Validator::make($request->all(),$validateRules);
+        $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
@@ -488,7 +488,7 @@ class postsController extends Controller
             'api_token'   =>  'required',
 
         ];
-        $error= \Illuminate\Support\Facades\Validator::make($request->all(),$validateRules);
+        $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
@@ -506,7 +506,7 @@ class postsController extends Controller
             'api_token'   =>  'required',
 
         ];
-        $error= \Illuminate\Support\Facades\Validator::make($request->all(),$validateRules);
+        $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
@@ -523,7 +523,7 @@ class postsController extends Controller
         $validateRules=[
             'api_token'   =>  'required',
         ];
-        $error= \Illuminate\Support\Facades\Validator::make($request->all(),$validateRules);
+        $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
@@ -593,11 +593,10 @@ class postsController extends Controller
 
     public function insertCommentAPI(Request $request)
     {
-
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -643,7 +642,7 @@ class postsController extends Controller
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -671,7 +670,7 @@ class postsController extends Controller
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -720,35 +719,30 @@ class postsController extends Controller
 
     public function insertPostAPI( Request $request){
         $validateRules = [
-            'api_token' => 'required',
-        ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
-        if ($error->fails()) {
-            return \Response::json(['errors' => $error->errors()->all()]);
-        }
-        $user = User::where('api_token', $request->api_token)->get()->first();
-        if ($user == null) {
-            return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
-        }
-        $user_id = $user->id;
-
-        $validateRules=[
+            'api_token'     => 'required',
             'post_name'     =>  'required',
             'post_desc'     =>  'required',
             'post_address'  =>  'required',
             'type'          =>  'required',
             'mobile'        =>  'required',
+            'price'         =>  'required',
             'email'         =>  'required',
-
+            'img'           =>  'required',
         ];
-        $newFilesArray=[];
-        $error= Validator::make($request->all(),$validateRules);
-        if($error->fails()){
-            return \Response::json(['errors'=>$error->errors()->all()]);
+        $error = Validator::make($request->all(), $validateRules);
+        if ($error->fails()) {
+            return \Response::json(['errors' => $error->errors()->all()]);
         }
+
+
+        $user = User::where('api_token', $request->api_token)->first();
+        if (!$user ) {
+            return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
+        }
+        $user_id = $user->id;
         if($files=$request->file('img')) {
             $validateRules = [
-                'img' => 'required',
+                'img'   => 'required',
                 'img.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
             foreach ($files as $file) {
@@ -756,18 +750,16 @@ class postsController extends Controller
                 if ($error->fails()) {
                     return \Response::json(['errors' => $error->errors()->all()]);
                 }
-
             }
-
             $post_id = posts::create(
-                [   'user_id' => $user_id,
+                [   'user_id'   => $user_id,
                     'post_name' => $request->post_name,
-                    'desc' => $request->post_desc,
-                    'address' => $request->post_address,
-                    'price' => $request->price,
-                    'email' => $request->email,
-                    'phone' => $request->mobile,
-                    'type' => $request->type,
+                    'desc'      => $request->post_desc,
+                    'address'   => $request->post_address,
+                    'price'     => $request->price,
+                    'email'     => $request->email,
+                    'phone'     => $request->mobile,
+                    'type'      => $request->type,
                 ]
             )->id;
 
@@ -777,40 +769,24 @@ class postsController extends Controller
                 $newFilesArray[] = $newFile;
                 $file->move(public_path('img/' . $user_id . '/posts/' . $request->type . '/' . $post_id), $newFile);
                 $img_url = 'img/' . $user_id . '/posts/' . $request->type . '/' . $post_id . '/' . $newFile;
-                //return $files;
                 $newGallary = gallary::create(
                     [   'post_id' => $post_id,
                         'img_url' => $img_url,
                     ]
                 )->id;
             }
-
-            return \Response::json(['success' => 'inserted success']);
-
+            return \Response::json(['success' => 'inserted success','post_id'=>$post_id]);
         }
         else{
-            $post_id = posts::create(
-                [   'user_id' => $user_id,
-                    'post_name' => $request->post_name,
-                    'desc' => $request->post_desc,
-                    'address' => $request->post_address,
-                    'price' => $request->price,
-                    'email' => $request->email,
-                    'phone' => $request->mobile,
-                    'type' => $request->type,
-                ]
-            )->id;
+            return \Response::json(['error' => 'one image required at least']);
         }
-        return \Response::json(['success' => 'inserted success','post_id'=>$post_id]);
-
-
     }
     public function editPostAPI(Request $request){
         $validateRules = [
             'api_token' => 'required',
-
+            'post_id'   => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -818,7 +794,6 @@ class postsController extends Controller
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
         }
-
         $posts=posts::where([['user_id',$user->id],['id',$request->post_id]])->first();
         if($posts!=null){
             return \Response::json(['postData'=>$posts]);
@@ -826,32 +801,25 @@ class postsController extends Controller
         else{
             return \Response::json(['errors' => 'not found', 'message' => 'post not found or you dont have permission to access']);
         }
-
     }
     public function updatePostAPI( Request $request){
         $validateRules = [
             'api_token' => 'required',
+            'post_name'     =>  'required',
+            'post_desc'     =>  'required',
+            'post_address'  =>  'required',
+            'type'          =>  'required',
+            'mobile'        =>  'required',
+            'price'         =>  'required',
+            'email'         =>  'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
         $user = User::where('api_token', $request->api_token)->get()->first();
         if ($user == null) {
             return \Response::json(['errors' => 'error login', 'message' => 'please login and active your account to access']);
-        }
-
-        $validateRules=[
-            'post_id'       =>  'required',
-            'post_name'     =>  'required',
-            'post_desc'     =>  'required',
-            'post_address'  =>  'required',
-            'mobile'        =>  'required',
-            'email'         =>  'required',
-        ];
-        $error= Validator::make($request->all(),$validateRules);
-        if($error->fails()){
-            return \Response::json(['errors'=>$error->errors()->all()]);
         }
 
         $user_id = $user->id;
@@ -865,17 +833,14 @@ class postsController extends Controller
                 'phone'         => $request->mobile,
             ]
         );
-
-        return \Response::json(['success'=>'updated success']);
-
-
+        return \Response::json(['success'=>'updated success','post_id'=>$request->post_id]);
 
     }
     public function deletePostAPI(Request $request){
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -906,7 +871,7 @@ class postsController extends Controller
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }
@@ -923,7 +888,7 @@ class postsController extends Controller
         $validateRules = [
             'api_token' => 'required',
         ];
-        $error = \Illuminate\Support\Facades\Validator::make($request->all(), $validateRules);
+        $error = Validator::make($request->all(), $validateRules);
         if ($error->fails()) {
             return \Response::json(['errors' => $error->errors()->all()]);
         }

@@ -25,11 +25,6 @@ Route::post('register','api\RegisterController@register');
 Route::post('login','api\LoginController@login');
 Route::get('email/resend', 'api\RegisterController@resend');
 Route::post('/password/reset','api\LoginController@sendEmail');
-//Route::post('/password/newPassword/','Auth\forgotPasswordController@updateNewPassword')->name('resetNewPass')->middleware('guest');
-
-
-Route::get('login/google/', 'api\LoginController@APIgoogleLogin');
-
 
 //my posts
 Route::post('myActiveRent','postsController@myRentActiveAPI');
@@ -44,13 +39,8 @@ Route::post('editPost','postsController@editPostAPI');
 Route::post('updatePost','postsController@updatePostAPI');
 Route::post('deletePost','postsController@deletePostAPI');
 
-Route::post('insertComment','postsController@insertCommentAPI');
-Route::post('deleteComment','postsController@deleteCommentAPI');
-Route::post('replyComment','postsController@replyCommentAPI');
+
+Route::post('/editProfile','profileController@EditMyProfileAPI');
+Route::post('/updateProfile','profileController@UpdateMyProfileAPI');
 
 
-Route::post('newNotification','postsController@myNewNotificationAPI');
-Route::post('AllNotification','postsController@myAllNotificationAPI');
-
-
-Route::get('/google/redirect', 'Auth\LoginController@googleRedirectToProvider');

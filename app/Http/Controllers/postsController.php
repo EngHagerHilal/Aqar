@@ -441,8 +441,7 @@ class postsController extends Controller
         if($error->fails()){
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
-
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $update = \DB::table('posts') ->where([ ['id', $request->id],['user_id',$user_id] ]) ->limit(1) ->update(
             [   'user_id'       => $user_id,
                 'post_name'     => $request->post_name,
@@ -455,9 +454,6 @@ class postsController extends Controller
         );
         return redirect(route('postDetails',['post_id'=>$request->id]));
         return \Response::json(['success'=>'updated success']);
-
-
-
     }
 
     ///////////////////apis/////////////////////
@@ -554,7 +550,7 @@ class postsController extends Controller
         }
 
     }
-
+/*
     public function insertCommentAPI(Request $request)
     {
         $validateRules = [
@@ -680,7 +676,7 @@ class postsController extends Controller
         }
 
     }
-
+*/
     public function insertPostAPI( Request $request){
         $validateRules = [
             'api_token'     => 'required',
@@ -772,10 +768,10 @@ class postsController extends Controller
     public function updatePostAPI( Request $request){
         $validateRules = [
             'api_token'     => 'required',
+            'post_id'       =>  'required',
             'post_name'     =>  'required',
             'post_desc'     =>  'required',
             'post_address'  =>  'required',
-            'type'          =>  'required',
             'mobile'        =>  'required',
             'price'         =>  'required',
             'email'         =>  'required',
@@ -793,8 +789,8 @@ class postsController extends Controller
             return \Response::json(['errors' => 'error access', 'message' => 'please active your account to access']);
         }
         $user_id = $user->id;
-        $update = \DB::table('posts') ->where([ ['id', $request->id],['user_id',$user_id] ]) ->limit(1) ->update(
-            [   'user_id'       => $user_id,
+        $update = posts::where([ ['id', $request->post_id],['user_id',$user_id] ]) ->update(
+            [
                 'post_name'     => $request->post_name,
                 'desc'          => $request->post_desc,
                 'address'       => $request->post_address,
@@ -804,7 +800,9 @@ class postsController extends Controller
                 'status'        => $request->status,
             ]
         );
-        return \Response::json(['success'=>'updated success','post_id'=>$request->post_id]);
+        if($update)
+            return \Response::json(['success'=>'updated success','post_id'=>$request->post_id]);
+        return \Response::json(['failed'=>'post not found or you dont have permission to access']);
 
     }
     public function deletePostAPI(Request $request){

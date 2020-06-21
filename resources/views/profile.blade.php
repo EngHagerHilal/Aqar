@@ -81,7 +81,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +170,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +191,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>
@@ -208,7 +208,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                        <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                        <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                                     </div>
                                 </div>
                             </div>

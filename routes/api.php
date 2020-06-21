@@ -22,13 +22,14 @@ Route::get('/index','postsController@indexPostsApi');
 Route::get('/search','postsController@searchPostsAPI');
 Route::get('postDetails','postsController@postDetailsAPI');
 
-Route::post('register','api\RegisterController@register');
+Route::match(array('GET', 'POST'),'register','api\RegisterController@register');
 Route::post('login','api\LoginController@login');
 Route::get('email/resend', 'api\RegisterController@resend');
 Route::post('/password/reset','api\LoginController@sendEmail');
 Route::post('/resendActivationLink','api\RegisterController@resendEmailActivation');
 
 //my posts
+Route::post('myPosts','postsController@myAllPostsAPI');
 Route::post('myActiveRent','postsController@myRentActiveAPI');
 Route::post('myDisActiveRent','postsController@myRentDisActiveAPI');
 Route::post('myActiveSell','postsController@mySellActiveAPI');

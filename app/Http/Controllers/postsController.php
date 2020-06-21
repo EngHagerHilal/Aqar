@@ -20,13 +20,7 @@ class postsController extends Controller
 {
     public function postsIndex(Request $request)
     {
-        if(Auth::check() ){
-            $notification=notification::AllnotiUnreaded(Auth::user()->id);
-        }
-        else{
-            $notification=[];
-        }
-
+        $notification=[];
         $request->filterType;
         $posts=posts::Active($request->filterType);
         if (count($posts) >10)
@@ -459,6 +453,26 @@ class postsController extends Controller
     ///////////////////apis/////////////////////
     public function indexPostsApi(){
         return$posts=posts::Active();
+    }
+    public function myAllPostsAPI(Request $request)
+    {
+        $validateRules=[
+            'api_token'   =>  'required',
+        ];
+        $error= Validator::make($request->all(),$validateRules);
+        if($error->fails()){
+            return \Response::json(['errors'=>$error->errors()->all()]);
+        }
+        $user=User::where([['api_token','=',$request->api_token],['email_verified_at','!=','']])->get()->first();
+        if($user==null){
+            return \Response::json(['errors'=>'error login','message'=>'please login and active your account to access']);
+        }
+        $allposts=[];
+        $allposts['rentPosts']['active']=posts::myRentActive($user->id);
+        $allposts['rentPosts']['disactive']=posts::myRentDisActive($user->id);
+        $allposts['sellPosts']['active']=posts::mySelActive($user->id);
+        $allposts['sellPosts']['disactive']=posts::mySelDisActive($user->id);
+        return \Response::json(['my posts'=>$allposts]);
     }
     public function myRentActiveAPI(Request $request)
     {

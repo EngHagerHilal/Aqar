@@ -16,12 +16,19 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/about_us', function (){
-    return view('about_us');
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    return "Cache is cleared";
 });
 Route::get('locale/{locale}', function ($locale){
     Session::put('locale', $locale);
     return redirect()->back();
+});
+Route::get('/about_us', function (){
+    return view('about_us');
 });
 Route::get('/','postsController@postsIndex');
 Route::get('/token','postsController@token');

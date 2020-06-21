@@ -117,8 +117,6 @@ class profileController extends Controller
         ];
         $error= Validator::make($request->all(),$validateRules);
         if($error->fails()){
-            return redirect()->back()->withErrors(['errors' => $error->errors()->all()]);
-
             return \Response::json(['errors'=>$error->errors()->all()]);
         }
         $credentials  = array('email' => $request->email, 'password' => $request->currentPass);

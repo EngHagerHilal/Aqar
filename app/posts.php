@@ -18,13 +18,16 @@ class posts extends Model
         $posts= DB::table('posts')->where([['status','=','active'],['type','=','rent'],['user_id','=',$id]])->get();
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
-            $images = gallary::where('post_id', $post->id)->first();
+            $images = gallary::where('post_id', $post->id)->get();
             if ($images != null) {
-                $post->mainImage = $images->img_url;
-            }
-            else{
-                $post->mainImage = 'img/no-image.png';
-            }
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
         }
         return $posts;
     }
@@ -35,13 +38,16 @@ class posts extends Model
         $posts= DB::table('posts')->where('user_id','=',$id)->get();
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
- $images = gallary::where('post_id', $post->id)->first();
+            $images = gallary::where('post_id', $post->id)->get();
             if ($images != null) {
-                $post->mainImage = $images->img_url;
-            }
-            else{
-                $post->mainImage = 'img/no-image.png';
-            }
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
         }
         return $posts;
     }
@@ -52,13 +58,16 @@ class posts extends Model
         $posts= DB::table('posts')->where([['status','=','active'],['type','=','selling'],['user_id','=',$id]])->get();
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
- $images = gallary::where('post_id', $post->id)->first();
+ $images = gallary::where('post_id', $post->id)->get();
             if ($images != null) {
-                $post->mainImage = $images->img_url;
-            }
-            else{
-                $post->mainImage = 'img/no-image.png';
-            }
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
         }
         return $posts;
     }
@@ -69,13 +78,16 @@ class posts extends Model
         $posts= DB::table('posts')->where([['status','!=','active'],['type','=','rent'],['user_id','=',$id]])->get();
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
- $images = gallary::where('post_id', $post->id)->first();
+ $images = gallary::where('post_id', $post->id)->get();
             if ($images != null) {
-                $post->mainImage = $images->img_url;
-            }
-            else{
-                $post->mainImage = 'img/no-image.png';
-            }
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
         }
         return $posts;
     }
@@ -86,13 +98,16 @@ class posts extends Model
         $posts= DB::table('posts')->where([['status','!=','active'],['type','=','selling'],['user_id','=',$id]])->get();
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
- $images = gallary::where('post_id', $post->id)->first();
+            $images = gallary::where('post_id', $post->id)->get();
             if ($images != null) {
-                $post->mainImage = $images->img_url;
-            }
-            else{
-                $post->mainImage = 'img/no-image.png';
-            }
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
         }
         return $posts;
     }
@@ -107,7 +122,7 @@ class posts extends Model
         if($posts !=null){
             foreach ($posts as $post) {
                 $post->username=User::find($post->user_id)->name;
-                $post->comments=comments::postcommentsCount($post->id);
+                $post->comments=0;
                 $images = gallary::where('post_id', $post->id)->get();
                 if ($images != null) {
                     $post->mainImage = $images->first()->img_url;

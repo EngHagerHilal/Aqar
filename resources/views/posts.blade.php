@@ -33,7 +33,7 @@
                         @csrf
                         <div class="form-group col-10 p-0">
                             <input type="hidden" name="searchOption" value="'all" id="searchOption">
-                            <input type="text" placeholder="{{ __('frontend.search') }}" name="filterType" class="form-control rounded-0 {{$inputBorder}} form-control-lg">
+                            <input type="text" autocomplete="off" placeholder="{{ __('frontend.search') }}" name="filterType" class="form-control rounded-0 {{$inputBorder}} form-control-lg">
                         </div>
                         <div class="form-group col-2 p-0">
                             <button type="submit" class="form-control bg-primary rounded-0 {{$buttonBorder}} form-control-lg p-0">

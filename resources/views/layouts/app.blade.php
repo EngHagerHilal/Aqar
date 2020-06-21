@@ -59,7 +59,7 @@
 
             <form method="post" action="{{route('search')}}" class="form-inline my-2 my-lg-0">
                 @csrf
-                <input required required name="filterType" class="form-control rounded-0 border-0 " type="search" placeholder="{{ __('frontend.search') }}" aria-label="Search">
+                <input autocomplete="off" required required name="filterType" class="form-control rounded-0 border-0 " type="search" placeholder="{{ __('frontend.search') }}" aria-label="Search">
                 <button class="btn bg-primary rounded-0 border-white my-2 m-0 my-sm-0" type="submit">
                     <i class="text-white fas fa-lg fa-search"></i>
                 </button>

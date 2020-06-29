@@ -33,7 +33,7 @@ class ForgotPasswordController extends Controller
         //return $request->all();
          $user=User::whereEmail($request->email)->first(); //->frst();
         if($user==null){
-            return redirect()->back()->withErrors('email','Email not existed');
+            return redirect()->back()->with('error','Email not existed');
         }
 
         $code=Str::random(60);

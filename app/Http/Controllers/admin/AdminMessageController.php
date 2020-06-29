@@ -27,11 +27,18 @@ class AdminMessageController extends Controller
         }
          $data = array( 'email' => $request->email, 'user' => $request->name,
             'phone' => $request->phone, 'messageText' => $request->message );
-         Mail::send( 'emails.message', $data, function( $message ) use ($data)
-        {
-            $message->from( $data['email'], $data['user']);
-            $message->to( env('MAIL_ADMIN_ADDRESS','aqar@leen.com.eg') ,'admin')->subject( 'new message!' )->cc('aqar@leen.com.eg');
-        });
+        try{
+            Mail::send( 'emails.message', $data, function( $message ) use ($data)
+            {
+                $message->from( $data['email'], $data['user']);
+                $message->to( env('MAIL_ADMIN_ADDRESS','aqar@leen.com.eg') ,'admin')->subject( 'new message!' )->cc('aqar@leen.com.eg');
+            });
+        }
+        catch (\Exception $exception){
+            return redirect()->back()->with(['email_error'=>'sorry error happened']);
+
+        }
+
 
         if( count(Mail::failures()) > 0 ) {
             return redirect()->back()->with(['email_error'=>'sorry error happened']);

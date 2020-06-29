@@ -92,8 +92,11 @@ return [
     'disActive_users'=>'blocked users',
     'send'=>'send',
     'ADMIN_LOGIN'=>'ADMIN LOGIN',
-    'about_us'=>'about us'
+    'about_us'=>'about us',
 
-
+    'alert'         =>'alert ',
+    'confirm_delete'=>'do you want to delete : ',
+    'confirm'       =>'confirm',
+    'cancel'        =>'cancel',
 
 ];

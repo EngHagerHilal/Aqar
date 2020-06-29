@@ -72,6 +72,7 @@ Route::get('/home', 'postsController@postsIndex')->name('home');
 
 Route::get('/posts/{filterType?}',        'postsController@postsIndex')->name('posts');
 Route::post('/posts/search/',        'postsController@searchPosts')->name('search');
+Route::get('/posts/{type}/',        'postsController@filterPosts')->name('filterPosts');
 Route::get('/postDetails/{post_id}','postsController@postDetails')->name('postDetails');
 Route::get('/posts/editPost/{post_id}','postsController@editPost')->name('editPost')->middleware(['auth','verified']);
 Route::post('/posts/updatePost/','postsController@updatePost')->name('updatePost')->middleware(['auth','verified']);

@@ -224,8 +224,9 @@
         <hr>
 
         <!-- Copyright -->
-        <div class="col-12 footer-copyright text-center ">© 2020 Copyright:
-            <a href="#">  leen.com</a>
+        <div class="col-12 footer-copyright text-center ">
+            Powered by <a target="_blank" href="https://leen.com.eg/">leen.com.eg </a><br> © Copyright
+            {{date('Y')}} <a href="{{url('/')}}">{{request()->getHost()}}</a>
         </div>
         <!-- Copyright -->
 

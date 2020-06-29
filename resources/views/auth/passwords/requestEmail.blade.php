@@ -8,6 +8,9 @@
         <div class="container">
             <div dir="ltr" class="row">
                 <div class="offset-2 col-md-8 login-form-2">
+                    @if(session()->has('error'))
+                    <div class="alert alert-info">{{session('error')}}</div>
+                    @endif
                     <h3 class="text-uppercase">{{ __('frontend.resetPass') }} </h3>
                     <form method="POST" action="{{ url('/password/reset') }}">
                         @csrf

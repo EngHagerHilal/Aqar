@@ -101,17 +101,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">confirm !!</h5>
+                    <h5 class="modal-title">{{__('frontend.alert')}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>dou you want to delete <strong>{{$posts->post_name}}</strong> !!!</p>
+                    <p>{{__('frontend.confirm_delete')}} <strong>{{$posts->post_name}}</strong> !!!</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="{{route('deletePost',['post_id'=>$posts->id])}}" type="button" class="btn btn-danger">confirm</a>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+                    <a href="{{route('deletePost',['post_id'=>$posts->id])}}" type="button" class="btn btn-danger"> {{__('frontend.confirm')}} </a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__("frontend.cancel")}}</button>
                 </div>
             </div>
         </div>

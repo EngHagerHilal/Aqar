@@ -73,6 +73,7 @@ class RegisterController extends Controller
             'name'          =>  'required|unique:users',
             'email'         =>  'required|unique:users',
             'password'      =>  'required|min:8',
+            'phone'         =>  'required|unique:users',
 
         ];
         $error= Validator::make($request->all(),$validateRules);
@@ -83,7 +84,8 @@ class RegisterController extends Controller
             'name'=>$request->name,
             'email'=>$request->email,
             'api_token'=>Str::random(60),
-            'password'=>Hash::make($request->password)
+            'password'=>Hash::make($request->password),
+            'phone'=>$request->phone,
         ]);
         $data->sendEmailVerificationNotification();
         $data->message='email created successfully check your email address to active your account';

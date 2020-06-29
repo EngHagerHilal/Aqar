@@ -55,11 +55,11 @@
                     <br>
                     <br>
                     <h3>{{ __('frontend.edit_your_data') }} </h3>
-                    @error('errors')
+                    @if(session('error'))
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>{{ session('error') }}</strong>
                             </span>
-                    @enderror
+                    @endif
                     <form dir="{{$dir}}" method="post" class="{{$textalign}}" action="{{route('updateProfile')}}">
                         @csrf
                         <div class="form-group">
@@ -80,21 +80,44 @@
                                     </span>
                             @enderror
                         </div>
+
+                        <div class="form-group">
+                            <label class="text-black" >{{ __('frontend.phone') }}</label>
+                            <input required type="text" class="@error('phone') is-invalid @enderror form-control" placeholder="{{ __('frontend.phone') }} " name="phone" value="{{Auth::user()->phone}}" />
+                            @error('phone')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
                         <div class="form-group">
                             <label class="text-black" >{{ __('frontend.old_password') }}</label>
-                            <input required type="password" class="form-control" placeholder="{{ __('frontend.old_password') }}" name="oldPass" value="" />
+                            <input required type="password" class="@error('oldPass') is-invalid @enderror form-control" placeholder="{{ __('frontend.old_password') }}" name="oldPass" value="" />
+                            @error('oldPass')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label class="text-black" >{{ __('frontend.new_password') }}</label>
 
-                            <input type="password" class="form-control" placeholder="{{ __('frontend.new_password') }}" name="newPass" value="" />
-
+                            <input type="password" class="@error('newPass') is-invalid @enderror form-control" placeholder="{{ __('frontend.new_password') }}" name="newPass" value="" />
+                            @error('newPass')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label class="text-black" >{{ __('frontend.confirm_password') }}</label>
 
-                            <input type="password" class="form-control" name="repeatNewPass" placeholder="{{ __('frontend.confirm_password') }}" value="" />
-
+                            <input type="password" class="@error('repeatNewPass') is-invalid @enderror form-control" name="repeatNewPass" placeholder="{{ __('frontend.confirm_password') }}" value="" />
+                            @error('repeatNewPass')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btnSubmit w-50 p-lg-2 m-auto d-block" value="{{ __('frontend.update') }}" />

@@ -19,7 +19,7 @@ class posts extends Model
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
             $images = gallary::where('post_id', $post->id)->get();
-            if ($images != null) {
+            if (count($images)>0) {
                     $post->mainImage = $images->first()->img_url;
                     $post->imgCount = count($images);
                 }
@@ -39,7 +39,7 @@ class posts extends Model
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
             $images = gallary::where('post_id', $post->id)->get();
-            if ($images != null) {
+            if (count($images)>0) {
                     $post->mainImage = $images->first()->img_url;
                     $post->imgCount = count($images);
                 }
@@ -59,7 +59,7 @@ class posts extends Model
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
  $images = gallary::where('post_id', $post->id)->get();
-            if ($images != null) {
+            if (count($images)>0) {
                     $post->mainImage = $images->first()->img_url;
                     $post->imgCount = count($images);
                 }
@@ -79,7 +79,7 @@ class posts extends Model
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
  $images = gallary::where('post_id', $post->id)->get();
-            if ($images != null) {
+            if (count($images)>0) {
                     $post->mainImage = $images->first()->img_url;
                     $post->imgCount = count($images);
                 }
@@ -99,15 +99,15 @@ class posts extends Model
         foreach ($posts as $post) {
             $post->comments=comments::postcommentsCount($post->id);
             $images = gallary::where('post_id', $post->id)->get();
-            if ($images != null) {
-                    $post->mainImage = $images->first()->img_url;
-                    $post->imgCount = count($images);
-                }
-                else{
-                    $post->mainImage = 'img/no-image.png';
-                    $post->imgCount = 0;
+            if (count($images)>0) {
+                $post->mainImage = $images->first()->img_url;
+                $post->imgCount = count($images);
+            }
+            else{
+                $post->mainImage = 'img/no-image.png';
+                $post->imgCount = 0;
 
-                }
+            }
         }
         return $posts;
     }
@@ -124,7 +124,7 @@ class posts extends Model
                 $post->username=User::find($post->user_id)->name;
                 $post->comments=0;
                 $images = gallary::where('post_id', $post->id)->get();
-                if ($images != null) {
+                if (count($images)>0) {
                     $post->mainImage = $images->first()->img_url;
                     $post->imgCount = count($images);
                 }

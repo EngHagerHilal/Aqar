@@ -42,13 +42,12 @@
 
                 <div class="col-md-5 m-auto btn-group" role="group" aria-label="First group">
                     <br>
-                    <button type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="rent">{{ __('frontend.rent') }}</button>
-                    <button type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="selling">{{ __('frontend.sel') }}</button>
-                    <button type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="">{{ __('frontend.all_news') }}</button>
+                    <button href="{{route('filterPosts',['type'=>'rent'])}}" type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="rent">{{ __('frontend.rent') }}</button>
+                    <button href="{{route('filterPosts',['type'=>'selling'])}}" type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="selling">{{ __('frontend.sel') }}</button>
+                    <button href="{{url('/')}}" type="button" class="text-uppercase serch-filtering btn btn-secondary" filter-type="">{{ __('frontend.all_news') }}</button>
                     <script>
                         $('button.serch-filtering').click(function () {
-                            $(this).addClass('active btn-primary').siblings().removeClass('active');
-                            $("#searchOption").val($(this).attr('filter-type'));
+                            window.location.replace($(this).attr('href'));
                         });
                     </script>
                 </div>
@@ -60,7 +59,7 @@
                         @csrf
                         <div class="form-group col-10 p-0">
                             <input type="hidden" name="searchOption" value="" id="searchOption">
-                            <input type="text" placeholder="{{ __('frontend.search') }}" name="filterType" class="form-control rounded-0 {{$inputBorder}} form-control-lg">
+                            <input autocomplete="off" required type="text" placeholder="{{ __('frontend.search') }}" name="filterType" class="form-control rounded-0 {{$inputBorder}} form-control-lg">
                         </div>
                         <div class="form-group col-2 p-0">
                             <button type="submit" class="form-control bg-primary rounded-0 {{$buttonBorder}} form-control-lg p-0">
@@ -92,7 +91,7 @@
                             </div>
                             <div class="card-footer">
                                 <span class="float-right"><i class="far fa-calendar-check"></i> {{$postItem->created_at}}</span>
-                                <span><i class=""></i><i class="far fa-comments"></i> 75 </span>
+                                <span><i class=""></i><i class="fas fa-images"></i> {{$postItem->imgCount}} </span>
                             </div>
                         </div>
                     </div>

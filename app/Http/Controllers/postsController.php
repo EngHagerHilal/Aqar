@@ -28,12 +28,15 @@ class postsController extends Controller
             $randomPosts = posts::where('status','=','active')->get()->random(10);
             foreach ($randomPosts as $post) {
                 $post->username=User::find($post->user_id)->name;
-                $images = gallary::where('post_id', $post->id)->first();
+                $images = gallary::where('post_id', $post->id)->get();
                 if ($images != null) {
-                    $post->mainImage = $images->img_url;
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
                 }
                 else{
                     $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
                 }
             }
         }
@@ -51,13 +54,13 @@ class postsController extends Controller
         $type='';
         if($serachOption != null){
             $posts=DB::table('posts')
-                ->where([['post_name','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['desc','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['address','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['price','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['email','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['type','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
-                ->orWhere([['phone','like','%'.$seachText.'%'],['status','=','active'],['type','=',$serachOption]])
+                ->where([['post_name','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['desc','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['address','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['price','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['email','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['type','like','%'.$seachText.'%'],['status','=','active']])
+                ->orWhere([['phone','like','%'.$seachText.'%'],['status','=','active']])
                 ->orderBy('id','DESC')->get();
             $type=$serachOption;
         }
@@ -76,13 +79,16 @@ class postsController extends Controller
         if($posts !=null){
             foreach ($posts as $post) {
                 $post->username=User::find($post->user_id)->name;
-                $images = gallary::where('post_id', $post->id)->first();
-                if ($images != null) {
-                    $post->mainImage = $images->img_url;
-                }
-                else{
-                    $post->mainImage = 'img/no-image.png';
-                }
+                $images = gallary::where('post_id', $post->id)->get();
+            if ($images != null) {
+                $post->mainImage = $images->first()->img_url;
+                $post->imgCount = count($images);
+            }
+            else{
+                $post->mainImage = 'img/no-image.png';
+                $post->imgCount = 0;
+
+            }
             }
         }
         if(Auth::check() ){
@@ -97,7 +103,34 @@ class postsController extends Controller
         else{
             $page_title = $type.' no result for : '.$seachText;
         }
-        return view('search',['posts'=>$posts,'seachText'=>$page_title,'page_title'=>'search for : '.$seachText,'notification'=>count($notification),'notificationContent'=>$notification]);
+        return view('search',['posts'=>$posts,'seachText'=>$page_title,'page_title'=>' : '.$seachText,'notification'=>count($notification),'notificationContent'=>$notification]);
+    }
+    public function filterPosts(Request $request)
+    {
+        //return $request;
+        $type=$request->type;
+        $page_title = ($request->type == 'rent') ? __('frontEnd.rent') : __('frontEnd.selling');
+
+        $posts=DB::table('posts')
+                ->where([['status','=','active'],['type','=',$type]])
+                ->orderBy('id','DESC')->get();
+        if($posts !=null){
+            foreach ($posts as $post) {
+                $post->username=User::find($post->user_id)->name;
+                $images = gallary::where('post_id', $post->id)->get();
+                if ($images != null) {
+                    $post->mainImage = $images->first()->img_url;
+                    $post->imgCount = count($images);
+                }
+                else{
+                    $post->mainImage = 'img/no-image.png';
+                    $post->imgCount = 0;
+
+                }
+            }
+        }
+            $notification=[];
+        return view('filteredPosts',['posts'=>$posts,'seachText'=>$page_title,'page_title'=>' : '.$page_title,'notification'=>count($notification),'notificationContent'=>$notification]);
     }
     public function postDetails(Request $request){
 
@@ -307,6 +340,7 @@ class postsController extends Controller
         if($posts!=null){
             $fileToDelete = new Filesystem;
             $fileToDelete->cleanDirectory( public_path('img/'.$posts->user_id.'/posts/'.$posts->type.'/'.$posts->id) );
+            postsController::deleteDirectory(public_path('img/'.$posts->user_id.'/posts/'.$posts->type.'/'.$posts->id));
             postsController::deleteDirectory(public_path('img/'.$posts->user_id.'/posts/'.$posts->type.'/'.$posts->id));
             if($posts->delete()){
                 return redirect(url('/'));
@@ -884,13 +918,16 @@ class postsController extends Controller
         if($posts !=null){
             foreach ($posts as $post) {
                 $post->username=User::find($post->user_id)->name;
-                $images = gallary::where('post_id', $post->id)->first();
-                if ($images != null) {
-                    $post->mainImage = $images->img_url;
-                }
-                else{
-                    $post->mainImage = 'img/no-image.png';
-                }
+                $images = gallary::where('post_id', $post->id)->get();
+            if ($images != null) {
+                $post->mainImage = $images->first()->img_url;
+                $post->imgCount = count($images);
+            }
+            else{
+                $post->mainImage = 'img/no-image.png';
+                $post->imgCount = 0;
+
+            }
             }
             return \Response::json(['success' => 'data available : '.count($posts),'data'=>$posts]);
         }
